@@ -37,16 +37,6 @@ class ProductController extends Controller
     }
 
     /**
-     * Show the form for creating a new resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
-    public function create()
-    {
-        //
-    }
-
-    /**
      * Store a newly created resource in storage.
      *
      * @param  \Illuminate\Http\Request  $request
@@ -54,7 +44,17 @@ class ProductController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        $this->validate($request, [
+            'name' => 'required',
+            'price' => 'required|gte:0',
+            'qty' => 'required|gte:0'
+        ]);
+
+        $data = $request->all();
+        $product = Product::create($data);
+        return response()->json([
+            'message' => $product->name." Berhasil Dibuat"
+        ]);
     }
 
     /**
@@ -65,18 +65,7 @@ class ProductController extends Controller
      */
     public function show(Product $product)
     {
-        //
-    }
-
-    /**
-     * Show the form for editing the specified resource.
-     *
-     * @param  \App\Product  $product
-     * @return \Illuminate\Http\Response
-     */
-    public function edit(Product $product)
-    {
-        //
+        return $product;
     }
 
     /**
@@ -88,7 +77,9 @@ class ProductController extends Controller
      */
     public function update(Request $request, Product $product)
     {
-        //
+        $data = $request->all();
+        $product->update($data);
+        return response()->json(['message' => 'Data '.$product->name.' Berhasil diperbarui']);
     }
 
     /**
@@ -99,6 +90,10 @@ class ProductController extends Controller
      */
     public function destroy(Product $product)
     {
-        //
+        $name = $product->name;
+        $product->delete();
+        return response()->json([
+            'message' => 'Data '. $name." Berhasil Di Hapus",
+        ], 200);
     }
 }

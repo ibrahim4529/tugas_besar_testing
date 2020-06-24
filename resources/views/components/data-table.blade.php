@@ -159,11 +159,28 @@
             },
             success: function (data) {
                 $("#modal_form").modal('hide');
+                swal("Pesan", data.message, {
+						icon : "success",
+						buttons: {
+							confirm: {
+								className : 'btn btn-success'
+							}
+						},
+				});
                 reload_table()
             },
             error: function (xhr, error, errorThrown) {
                 if (xhr.status == 422) {
-                    var errors = xhr.responseJSON.errors;
+                    let message = xhr.responseJSON.message;
+                    let errors = xhr.responseJSON.errors;
+                    swal('Error', message, {
+                        icon: 'error',
+                        buttons: {
+                            confirm:{
+                                className: 'btn btn-info'
+                            }
+                        }
+                    });
                     $.each(errors, function (index, val) {
                         $(".form-group#" + index).addClass('has-error has-feedback').append(
                             '<label class="error" for="' + index + '">' + val[0] + '</label>'
@@ -179,7 +196,14 @@
             url: url + '/' + id,
             method: 'DELETE',
             success: function (data) {
-                console.log(data);
+                swal("Pesan", data.message, {
+						icon : "success",
+						buttons: {
+							confirm: {
+								className : 'btn btn-success'
+							}
+						},
+				});
                 reload_table(false);
             }
         })
