@@ -16,6 +16,7 @@ class CreateTransactionsTable extends Migration
         Schema::create('transactions', function (Blueprint $table) {
             $table->id();
             $table->foreignId('user_id')->references('id')->on('users')->onDelete('cascade');
+            $table->string('invoice')->unique();
             $table->unsignedInteger('final_price');
             $table->string('note')->nullable();
             $table->timestamps();

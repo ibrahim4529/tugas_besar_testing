@@ -28,7 +28,20 @@
 							</span>
                     <h4 class="text-section">Menu Menejemen</h4>
                 </li>
-                <li class="nav-item @url('outlets') active @endurl">
+                <li class="nav-item @url('products') active @endurl">
+                    <a href="{{ URL('products') }}">
+                        <i class="flaticon flaticon-store"></i>
+                        <p>Produk</p>
+                    </a>
+                </li>
+                <li class="nav-item @url('transactions') active @endurl">
+                    <a href="{{ URL('transactions') }}">
+                        <i class="flaticon flaticon-cart"></i>
+                        <p>Transaksi</p>
+                    </a>
+                </li>
+            </ul>
+                {{-- <li class="nav-item @url('outlets') active @endurl">
                     <a href="{{ URL('outlets') }}">
                         <i class="fas fa-store-alt"></i>
                         <p>Outlets</p>
@@ -66,18 +79,6 @@
                                     <p>Master Produk</p>
                                 </a>
                             </li>
-{{--                            <li @url('inventory/in') class=" active " @endurl>--}}
-{{--                                <a href="{{ route('in.index') }}">--}}
-{{--                                    <i class="fas fa-arrow-circle-left"></i>--}}
-{{--                                    <p>Produk Masuk</p>--}}
-{{--                                </a>--}}
-{{--                            </li>--}}
-{{--                            <li @url('inventory/out') class=" active " @endurl>--}}
-{{--                                <a href="{{ route('out.index') }}">--}}
-{{--                                    <i class="fas fa-share-square"></i>--}}
-{{--                                    <p>Produk Keluar</p>--}}
-{{--                                </a>--}}
-{{--                            </li>--}}
                         </ul>
                     </div>
                 </li>
@@ -87,7 +88,7 @@
                         <p>Transaksi</p>
                     </a>
                 </li>
-            </ul>
+            </ul> --}}
         </div>
     </div>
 </div>

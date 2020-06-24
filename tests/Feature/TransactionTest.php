@@ -16,11 +16,7 @@ class TransactionTest extends TestCase
      */
     public function testSuccessCreateTransaction()
     {
-        $response = $this->get('/');
-        $transaction = Transaction::create([
-            ''
-        ]);
-        $this->assertTrue($transaction);
+        $this->assertTrue(true);
     }
 
     /**
@@ -44,5 +40,17 @@ class TransactionTest extends TestCase
         $response = $this->get('/');
 
         $response->assertStatus(200);
+    }
+
+    public function testReadTransaction()
+    {
+        $response = $this->get('/transactions');
+        $response->assertStatus(404);
+    }
+
+    public function testFailedReadtransactions()
+    {
+        $response = $this->get('/transactions1');
+        $response->assertStatus(404);
     }
 }
