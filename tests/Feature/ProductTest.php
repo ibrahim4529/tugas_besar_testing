@@ -13,9 +13,9 @@ class ProductTest extends TestCase
      *
      * @return void
      */
-    public function testExample()
+    public function testLoadUser()
     {
-        $response = $this->get('/');
+        $response = $this->get('http://127.0.0.1:8000/login');
 
         $response->assertStatus(200);
     }

@@ -77,9 +77,10 @@ class ProductController extends Controller
      */
     public function update(Request $request, Product $product)
     {
+        $name = $product->name;
         $data = $request->all();
         $product->update($data);
-        return response()->json(['message' => 'Data '.$product->name.' Berhasil diperbarui']);
+        return response()->json(['message' => 'Data '.$name.' Berhasil diperbarui']);
     }
 
     /**
