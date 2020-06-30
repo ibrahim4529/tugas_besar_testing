@@ -4,9 +4,14 @@ namespace App\Http\Controllers;
 
 use App\Transaction;
 use Illuminate\Http\Request;
+use Yajra\DataTables\Facades\DataTables;
 
 class TransactionController extends Controller
 {
+    public function __construct()
+    {
+        $this->middleware('auth');
+    }
     /**
      * Display a listing of the resource.
      *
@@ -14,8 +19,24 @@ class TransactionController extends Controller
      */
     public function index()
     {
+        $header_table = [
+            'id' => 'ID',
+            'invoice' => 'Invoice',
+            'final_price' => 'Total Harga',
+            'note' => 'Note',
+            'action' => 'Action'
+        ];
+        if(request()->ajax()){
+            $products = Transaction::all(['id', 'invoice', 'final_price', 'note']);
+            return DataTables::of($products)->addColumn('action', function ($data) {
+                $edit = '<button onclick="edit_data(' . $data->id . ')" class="btn btn-sm btn-primary"><i class="flaticon flaticon-pencil"></i> Edit</button>';
+                $delete = '<button onclick="delete_data(' . $data->id . ')" class="btn btn-sm btn-danger"><i class="flaticon flaticon-close"></i> Delete</button>';
+                $action = '<div class="btn-group" role="group" aria-label="Basic example">' . $edit . $delete . '</div>';
+                return $action;
+            })->rawColumns(['action'])->make(true);
+        }
 
-        return view('transaction.index');
+        return view('transaction.index', compact('header_table'));
     }
 
     /**
