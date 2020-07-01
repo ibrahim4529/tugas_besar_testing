@@ -58,7 +58,7 @@ class ProductController extends Controller
         $product = Product::create($data);
         return response()->json([
             'message' => $product->name." Berhasil Dibuat"
-        ]);
+        ], 201);
     }
 
     /**
@@ -84,7 +84,7 @@ class ProductController extends Controller
         $name = $product->name;
         $data = $request->all();
         $product->update($data);
-        return response()->json(['message' => 'Data '.$name.' Berhasil diperbarui']);
+        return response()->json(['message' => 'Data '.$name.' Berhasil diperbarui'], 201);
     }
 
     /**
