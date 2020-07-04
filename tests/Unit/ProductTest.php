@@ -176,4 +176,21 @@ class ProductTest extends TestCase
         ];
         $this->invalidUpdateProductData($data, 'qty');
     }
+
+    public function testDeleteProductWhenAvailable()
+    {
+        $user = factory(User::class)->make();
+        $this->actingAs($user);
+        $product = factory(Product::class)->create();
+
+        $this->post(route('products.destroy', $product->id))->assertStatus(200);
+    }
+
+    // public function testDeleteProductWhenNotAvailable()
+    // {
+    //     $user = factory(User::class)->make();
+    //     $this->actingAs($user);
+    //     $product = factory(Product::class)->create();
+    //     $this->post(route('products.destroy', 4))->assertStatus(405);
+    // }
 }

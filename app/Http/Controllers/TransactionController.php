@@ -2,8 +2,10 @@
 
 namespace App\Http\Controllers;
 
+use App\Product;
 use App\Transaction;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use Yajra\DataTables\Facades\DataTables;
 
 class TransactionController extends Controller
@@ -29,14 +31,14 @@ class TransactionController extends Controller
         if(request()->ajax()){
             $products = Transaction::all(['id', 'invoice', 'final_price', 'note']);
             return DataTables::of($products)->addColumn('action', function ($data) {
-                $edit = '<button onclick="edit_data(' . $data->id . ')" class="btn btn-sm btn-primary"><i class="flaticon flaticon-pencil"></i> Edit</button>';
+                $show = '<button onclick="show_data(' . $data->id . ')" class="btn btn-sm btn-primary"><i class="flaticon flaticon-pencil"></i> Show</button>';
                 $delete = '<button onclick="delete_data(' . $data->id . ')" class="btn btn-sm btn-danger"><i class="flaticon flaticon-close"></i> Delete</button>';
-                $action = '<div class="btn-group" role="group" aria-label="Basic example">' . $edit . $delete . '</div>';
+                $action = '<div class="btn-group" role="group" aria-label="Basic example">' . $show . $delete . '</div>';
                 return $action;
             })->rawColumns(['action'])->make(true);
         }
-
-        return view('transaction.index', compact('header_table'));
+        $products = Product::all();
+        return view('transaction.index', compact('header_table', 'products'));
     }
 
     /**
@@ -57,7 +59,20 @@ class TransactionController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        $this->validate($request, [
+            'invoice' => 'required',
+            'final_price' => 'required|gte:0',
+            'list_barang' => 'required'
+        ]);
+        $list_barang =  json_decode($request->list_barang);
+        $iput_transaksi = $request->except('list_barang');
+        $iput_transaksi['invoice'] = $request->invoice.Transaction::max('id');
+        $iput_transaksi['user_id'] = Auth::user()->id;
+        $transaction = Transaction::create($iput_transaksi);
+        foreach($list_barang as $barang){
+            $transaction->products()->attach($barang->id, ['qty' => $barang->qty, 'final_price' => $barang->final_price]);
+        }
+        return response()->json(['message' => 'Berhasil Menambahkan Transaksi'], 201);
     }
 
     /**
@@ -68,7 +83,7 @@ class TransactionController extends Controller
      */
     public function show(Transaction $transaction)
     {
-        //
+        return $transaction;
     }
 
     /**
@@ -102,6 +117,7 @@ class TransactionController extends Controller
      */
     public function destroy(Transaction $transaction)
     {
-        //
+        $transaction->delete();
+        return response()->json(['message' => 'Transaksi Berhasil Di Hapus']);
     }
 }

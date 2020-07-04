@@ -54,7 +54,7 @@
                                         </form>
                                     </div>
                                     <div class="modal-footer border-0">
-                                        <button type="button" onclick="save_data()" id="btn_save"
+                                        <button type="button" onclick="@url('transactions') save_trans() @else save_data() @endurl" id="btn_save"
                                             class="btn btn-primary">Save data
                                         </button>
                                         <button type="button" class="btn btn-danger" data-dismiss="modal">Close</button>

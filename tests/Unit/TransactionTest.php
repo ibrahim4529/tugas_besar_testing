@@ -2,21 +2,47 @@
 
 namespace Tests\Unit;
 
+use App\Product;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Foundation\Testing\WithFaker;
 use Tests\TestCase;
 use App\Transaction;
+use App\User;
+use Illuminate\Foundation\Testing\DatabaseMigrations;
+use Illuminate\Foundation\Testing\DatabaseTransactions;
 
 class TransactionTest extends TestCase
 {
+    use DatabaseMigrations;
+    use DatabaseTransactions;
+    public function testloadTransactionPageTanpaLogin()
+    {
+        $this->get('/transactions')->assertRedirect('/login');
+    }
     /**
      * A basic feature test example.
      *
      * @return void
      */
-    public function testSuccessCreateTransaction()
+    public function testSuccessCreateValidTransaction()
     {
-        $this->assertTrue(true);
+        $user = factory(User::class)->create();
+        $this->actingAs($user);
+        $products = factory(Product::class,2 )->create();
+        foreach($products as $product){
+            $product['final_price'] = 1;
+        }
+        $data = [
+            'note'=> 'Makanan',
+            'final_price' => 1000,
+            'invoice' => 10,
+            'user_id' => $user->id,
+            'list_barang' => $products->toJson()
+        ];
+        $message_json = [
+            'message' => 'Berhasil Menambahkan Transaksi'
+        ];
+        $this->post(route('transactions.store', $data))->assertStatus(201);
     }
 
     /**
@@ -26,31 +52,22 @@ class TransactionTest extends TestCase
      */
     public function testFailedValidationCreateTransaction()
     {
-        $response = $this->get('/');
+        $user = factory(User::class)->create();
+        $this->actingAs($user);
+        $products = factory(Product::class,2 )->create();
+        foreach($products as $product){
+            $product['final_price'] = 1;
+        }
+        $data = [
+            'note'=> 'Makanan',
+            'final_price' => 1000,
+            'invoice' => '',
+            'user_id' => $user->id,
+            'list_barang' => $products->toJson()
+        ];
 
-        $response->assertStatus(200);
-    }
-    /**
-     * A basic feature test example.
-     *
-     * @return void
-     */
-    public function testFailedCreateTransaction()
-    {
-        $response = $this->get('/');
+        $this->post(route('transactions.store', $data))->assertSessionHasErrors();
 
-        $response->assertStatus(200);
-    }
-
-    public function testReadTransaction()
-    {
-        $response = $this->get('/transactions');
-        $response->assertStatus(404);
     }
 
-    public function testFailedReadtransactions()
-    {
-        $response = $this->get('/transactions1');
-        $response->assertStatus(404);
-    }
 }

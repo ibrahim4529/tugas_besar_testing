@@ -81,6 +81,11 @@ class ProductController extends Controller
      */
     public function update(Request $request, Product $product)
     {
+        $this->validate($request, [
+            'name' => 'required',
+            'price' => 'required|gte:0',
+            'qty' => 'required|gte:0'
+        ]);
         $name = $product->name;
         $data = $request->all();
         $product->update($data);
